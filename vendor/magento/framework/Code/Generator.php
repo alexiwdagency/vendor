@@ -137,6 +137,9 @@ class Generator
                     . 'you must add the generated class object to the signature of the related construct method, only.';
                 $message = implode(PHP_EOL, $errors);
                 $this->getLogger()->critical($message);
+                \Magento\Framework\App\ObjectManager::getInstance()
+                    ->get(\Magento\Framework\Event\Manager::class)
+                    ->dispatch('kg_runtime_exception_notification', ['message' => $message, 'class' => $className]);
                 throw new \RuntimeException($message);
             }
             if (!$this->definedClasses->isClassLoadableFromMemory($className)) {
